@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">Dashboard</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <h5 class="card-title">OPEN</h5>
+      <p class="display-6 mb-0">{{ stats.get('OPEN', 0) }}</p>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <h5 class="card-title">IN_PROGRESS</h5>
+      <p class="display-6 mb-0">{{ stats.get('IN_PROGRESS', 0) }}</p>
+    </div></div>
+  </div>
+  <div class="col-md-4">
+    <div class="card shadow-sm"><div class="card-body">
+      <h5 class="card-title">RESOLVED</h5>
+      <p class="display-6 mb-0">{{ stats.get('RESOLVED', 0) }}</p>
+    </div></div>
+  </div>
+</div>
+<div class="mt-4">
+  <a class="btn btn-outline-primary" href="{{ url_for('tickets_list') }}">Go to Tickets</a>
+</div>
+{% endblock %}

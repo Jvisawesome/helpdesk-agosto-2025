@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div>
+    <h3 class="mb-1">Ticket #{{ ticket.id }}</h3>
+    <div class="text-muted">{{ ticket.title }}</div>
+  </div>
+  <a class="btn btn-outline-secondary" href="{{ url_for('tickets_list') }}">Back</a>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5>Description</h5>
+        <p class="mb-0">{{ ticket.description }}</p>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mt-3">
+      <div class="card-body">
+        <h5 class="mb-3">Comments</h5>
+
+        {% if comments|length == 0 %}
+          <p class="text-muted">No comments yet.</p>
+        {% else %}
+          <ul class="list-group mb-3">
+            {% for c in comments %}
+              <li class="list-group-item">
+                <div class="d-flex justify-content-between">
+                  <strong>{{ c.user_name }}</strong>
+                  <span class="text-muted small">{{ c.created_at }}</span>
+                </div>
+                <div>{{ c.comment }}</div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('ticket_add_comment', ticket_id=ticket.id) }}">
+          <div class="mb-2">
+            <textarea class="form-control" name="comment" rows="3" placeholder="Write a comment..." required></textarea>
+          </div>
+          <button class="btn btn-primary">Add Comment</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-3">Details</h5>
+
+        <div class="mb-2"><strong>Status:</strong> <span id="statusBadge" class="badge text-bg-secondary">{{ ticket.status }}</span></div>
+        <div class="mb-2"><strong>Priority:</strong> <span id="priorityText">{{ ticket.priority }}</span></div>
+        <div class="mb-2"><strong>Created by:</strong> {{ ticket.created_by_name }}</div>
+        <div class="mb-2"><strong>Assigned to:</strong> {{ ticket.assigned_to_name or '-' }}</div>
+        <div class="mb-2"><strong>Created at:</strong> {{ ticket.created_at }}</div>
+        <div class="mb-3"><strong>Updated at:</strong> {{ ticket.updated_at }}</div>
+
+        {% if session.get('user_role') in ['ADMIN','AGENT'] %}
+        <hr>
+        <h6 class="mb-2">Update (POST)</h6>
+        <form method="post" action="{{ url_for('ticket_update', ticket_id=ticket.id) }}">
+          <div class="mb-2">
+            <label class="form-label">Status</label>
+            <select class="form-select" name="status">
+              {% for s in allowed_status %}
+                <option value="{{ s }}" {% if ticket.status==s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Priority</label>
+            <select class="form-select" name="priority">
+              {% for p in allowed_priority %}
+                <option value="{{ p }}" {% if ticket.priority==p %}selected{% endif %}>{{ p }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          {% if session.get('user_role') == 'ADMIN' %}
+          <div class="mb-2">
+            <label class="form-label">Assign to (Admin)</label>
+            <select class="form-select" name="assigned_to">
+              <option value="">-- Unassigned --</option>
+              {% for a in agents %}
+                <option value="{{ a.id }}" {% if ticket.assigned_to==a.id %}selected{% endif %}>{{ a.name }} ({{ a.email }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+
+          <button class="btn btn-primary">Save</button>
+        </form>
+
+        <hr>
+        <h6 class="mb-2">Update with jQuery (AJAX)</h6>
+        <div class="row g-2">
+          <div class="col-6">
+            <select id="ajaxStatus" class="form-select">
+              {% for s in allowed_status %}
+                <option value="{{ s }}" {% if ticket.status==s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-6">
+            <select id="ajaxPriority" class="form-select">
+              {% for p in allowed_priority %}
+                <option value="{{ p }}" {% if ticket.priority==p %}selected{% endif %}>{{ p }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-outline-primary mt-2" id="ajaxSaveBtn" data-ticket-id="{{ ticket.id }}">Save without reload</button>
+        <div class="small text-muted mt-2" id="ajaxMsg"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
