@@ -24,3 +24,5 @@ Proyecto de Help Desk con roles (ADMIN/AGENT/USER), tickets y comentarios.
 
 Screenshots para tener una idea de como se ve todo finalizado: 
 https://github.com/Jvisawesome/helpdesk-agosto-2025/tree/main/docs/screenshots
+
+Para ver el video explicativo de como usar el projecto, unde el archivo .mp4 y se descargara localmente. 
