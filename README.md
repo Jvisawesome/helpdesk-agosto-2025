@@ -21,3 +21,6 @@ Proyecto de Help Desk con roles (ADMIN/AGENT/USER), tickets y comentarios.
 
 5) Ejecuta:
 - `python app.py`
+
+Screenshots para tener una idea de como se ve todo finalizado: 
+https://github.com/Jvisawesome/helpdesk-agosto-2025/tree/main/docs/screenshots
